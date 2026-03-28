@@ -12,12 +12,12 @@ jobs:
         uses: microsoft/setup-msbuild@v2
 
       - name: Build Solution
-        # C++ 프로젝트는 msbuild를 사용하여 Release 모드, x64 환경으로 빌드합니다.
-        run: msbuild ED9FontConverter.sln /p:Configuration=Release /p:Platform=x64
+        # 하위 폴더 내의 .sln 파일을 지정합니다.
+        run: msbuild ED9FontConverter/ED9FontConverter.sln /p:Configuration=Release /p:Platform=x64
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ED9FontConverter-Program
-          # 빌드 결과물(EXE)이 생성되는 정확한 경로입니다.
-          path: "x64/Release/ED9FontConverter.exe"
+          name: ED9FontConverter-Result
+          # 빌드 후 생성되는 EXE 파일의 예상 경로입니다.
+          path: "**/x64/Release/ED9FontConverter.exe"
