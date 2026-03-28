@@ -1,0 +1,26 @@
+name: Build EXE
+on: [workflow_dispatch] # 사용자가 버튼을 눌러 직접 실행
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '6.0.x' # 이 프로젝트는 .NET 6 기반입니다
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ED9FontConverter-Result
+          path: "**/bin/Release/**/ED9FontConverter.exe"
