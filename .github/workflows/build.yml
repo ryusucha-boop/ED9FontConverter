@@ -1,5 +1,5 @@
 name: Build EXE
-on: [workflow_dispatch] # 사용자가 버튼을 눌러 직접 실행
+on: [workflow_dispatch]
 
 jobs:
   build:
@@ -11,16 +11,19 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '6.0.x' # 이 프로젝트는 .NET 6 기반입니다
+          dotnet-version: '6.0.x'
 
       - name: Restore dependencies
-        run: dotnet restore
+        # 폴더 경로를 지정하여 실행합니다
+        run: dotnet restore ED9FontConverter/ED9FontConverter.csproj
 
       - name: Build
-        run: dotnet build --configuration Release
+        # 폴더 경로와 리스토어 금지 옵션을 추가합니다
+        run: dotnet build ED9FontConverter/ED9FontConverter.csproj --configuration Release --no-restore
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ED9FontConverter-Result
-          path: "**/bin/Release/**/ED9FontConverter.exe"
+          name: ED9FontConverter-EXE
+          # 빌드된 결과물 위치를 정확히 지정합니다
+          path: "ED9FontConverter/bin/Release/**/ED9FontConverter.exe"
