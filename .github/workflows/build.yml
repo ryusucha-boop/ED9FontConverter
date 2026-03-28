@@ -1,4 +1,4 @@
-name: Build C++ EXE
+name: Build Cpp Project
 on: workflow_dispatch
 
 jobs:
@@ -11,13 +11,13 @@ jobs:
       - name: Add MSBuild to PATH
         uses: microsoft/setup-msbuild@v2
 
-      - name: Build Solution
-        # 하위 폴더 내의 .sln 파일을 지정합니다.
-        run: msbuild ED9FontConverter/ED9FontConverter.sln /p:Configuration=Release /p:Platform=x64
+      - name: Build Project
+        # .sln 대신 .vcxproj 파일 경로를 직접 지정하여 빌드합니다.
+        run: msbuild ED9FontConverter/ED9FontConverter.vcxproj /p:Configuration=Release /p:Platform=x64
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ED9FontConverter-Result
-          # 빌드 후 생성되는 EXE 파일의 예상 경로입니다.
-          path: "**/x64/Release/ED9FontConverter.exe"
+          name: ED9FontConverter-EXE
+          # 빌드 후 생성되는 EXE 파일의 실제 경로입니다.
+          path: "ED9FontConverter/x64/Release/*.exe"
