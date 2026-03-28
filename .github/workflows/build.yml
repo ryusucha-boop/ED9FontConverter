@@ -1,5 +1,5 @@
-name: Build EXE
-on: [workflow_dispatch]
+name: Build C++ EXE
+on: workflow_dispatch
 
 jobs:
   build:
@@ -8,24 +8,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '6.0.x'
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v2
 
-      - name: Restore dependencies
-        # 현재 위치와 모든 하위 폴더에서 .csproj 파일을 찾아 리스토어합니다.
-        run: dotnet restore (Get-ChildItem -Filter *.csproj -Recurse).FullName
-        shell: pwsh
-
-      - name: Build
-        # 찾은 프로젝트 파일을 릴리즈 모드로 빌드합니다.
-        run: dotnet build (Get-ChildItem -Filter *.csproj -Recurse).FullName --configuration Release --no-restore
-        shell: pwsh
+      - name: Build Solution
+        # C++ 프로젝트는 msbuild를 사용하여 Release 모드, x64 환경으로 빌드합니다.
+        run: msbuild ED9FontConverter.sln /p:Configuration=Release /p:Platform=x64
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ED9FontConverter-EXE
-          # 빌드된 결과물 폴더 전체를 가져옵니다.
-          path: "**/bin/Release/**/ED9FontConverter.exe"
+          name: ED9FontConverter-Program
+          # 빌드 결과물(EXE)이 생성되는 정확한 경로입니다.
+          path: "x64/Release/ED9FontConverter.exe"
