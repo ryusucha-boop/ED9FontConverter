@@ -1,16 +1,26 @@
-name: Build EXE
-on: [push, workflow_dispatch]
+name: Build CSharp EXE
+on: [workflow_dispatch] # 버튼을 눌러 수동 실행
+
 jobs:
   build:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v3
-      - setup-python:
-        python-version: '3.10'
-      - run: |
-          pip install pyinstaller
-          pyinstaller --onefile main.py
-      - uses: actions/upload-artifact@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
         with:
-          name: FontConverter-EXE
-          path: dist/main.exe
+          dotnet-version: '6.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ED9FontConverter-EXE
+          path: "**/bin/Release/**/ED9FontConverter.exe"
