@@ -1,0 +1,19 @@
+name: Build CSharp EXE
+on: workflow_dispatch # 버튼을 눌러 수동 실행
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.0.x' # 프로젝트 버전에 맞춰 자동 조절
+      - name: Build
+        run: dotnet build --configuration Release
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ED9FontConverter-EXE
+          path: '**/bin/Release/**/*.exe'
