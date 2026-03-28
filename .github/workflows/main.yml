@@ -1,0 +1,16 @@
+name: Build EXE
+on: [push, workflow_dispatch]
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - setup-python:
+        python-version: '3.10'
+      - run: |
+          pip install pyinstaller
+          pyinstaller --onefile main.py
+      - uses: actions/upload-artifact@v3
+        with:
+          name: FontConverter-EXE
+          path: dist/main.exe
