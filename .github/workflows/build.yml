@@ -14,16 +14,18 @@ jobs:
           dotnet-version: '6.0.x'
 
       - name: Restore dependencies
-        # 폴더 경로를 지정하여 실행합니다
-        run: dotnet restore ED9FontConverter/ED9FontConverter.csproj
+        # 현재 위치와 모든 하위 폴더에서 .csproj 파일을 찾아 리스토어합니다.
+        run: dotnet restore (Get-ChildItem -Filter *.csproj -Recurse).FullName
+        shell: pwsh
 
       - name: Build
-        # 폴더 경로와 리스토어 금지 옵션을 추가합니다
-        run: dotnet build ED9FontConverter/ED9FontConverter.csproj --configuration Release --no-restore
+        # 찾은 프로젝트 파일을 릴리즈 모드로 빌드합니다.
+        run: dotnet build (Get-ChildItem -Filter *.csproj -Recurse).FullName --configuration Release --no-restore
+        shell: pwsh
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: ED9FontConverter-EXE
-          # 빌드된 결과물 위치를 정확히 지정합니다
-          path: "ED9FontConverter/bin/Release/**/ED9FontConverter.exe"
+          # 빌드된 결과물 폴더 전체를 가져옵니다.
+          path: "**/bin/Release/**/ED9FontConverter.exe"
