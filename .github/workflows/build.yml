@@ -7,17 +7,21 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          # 서브모듈(외부 라이브러리)까지 모두 다운로드합니다.
+          submodules: recursive
+          fetch-depth: 0
 
       - name: Add MSBuild to PATH
         uses: microsoft/setup-msbuild@v2
 
       - name: Build Project
-        # .sln 대신 .vcxproj 파일 경로를 직접 지정하여 빌드합니다.
+        # OpenXLSX 경로를 포함하여 빌드합니다.
         run: msbuild ED9FontConverter/ED9FontConverter.vcxproj /p:Configuration=Release /p:Platform=x64
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: ED9FontConverter-EXE
-          # 빌드 후 생성되는 EXE 파일의 실제 경로입니다.
-          path: "ED9FontConverter/x64/Release/*.exe"
+          # 빌드 완료 후 EXE 파일이 생성되는 경로입니다.
+          path: "**/x64/Release/*.exe"
